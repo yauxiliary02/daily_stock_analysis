@@ -17,11 +17,25 @@ on:
           - full          # 完整分析（股票+大盘）
           - market-only   # 仅大盘复盘
           - stocks-only   # 仅股票分析
+          - backtest
+       stocks:
+        description: '股票代码，逗号分隔，例如 159267 或 301257,300918'
+        required: false
+        default: ''
+        type: string
+
+      backtest_days:
+        description: '回测/历史验证天数，例如 5、10、20'
+        required: false
+        default: '10'
+        type: string
+
       force_run:
         description: '强制运行（跳过交易日检查）'
         required: false
-        default: false
-        type: boolean
+
+   default: false
+   type: boolean
 
 # 并发控制：同一时间只运行一个分析任务
 concurrency:
