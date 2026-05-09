@@ -339,7 +339,8 @@ jobs:
           # ==========================================
           # 自选股配置
           # ==========================================
-          STOCK_LIST: ${{ vars.STOCK_LIST || secrets.STOCK_LIST || '600519' }}
+          STOCK_LIST: ${{ github.event.inputs.stocks || vars.STOCK_LIST || secrets.STOCK_LIST || '600519' }}
+
           MARKET_REVIEW_REGION: ${{ vars.MARKET_REVIEW_REGION || secrets.MARKET_REVIEW_REGION || 'cn' }}
           
           # ==========================================
@@ -443,14 +444,21 @@ jobs:
             echo "⚡ 已启用强制运行模式（跳过交易日检查）"
           fi
 
+                    BACKTEST_DAYS="${{ github.event.inputs.backtest_days || '10' }}"
+          echo "📌 本次输入股票: $STOCK_LIST"
+          echo "📅 回测/历史验证天数: $BACKTEST_DAYS"
+
           # 执行分析
           if [ "$MODE" = "market-only" ]; then
             python main.py --market-review $FORCE_RUN_ARG
           elif [ "$MODE" = "stocks-only" ]; then
             python main.py --no-market-review $FORCE_RUN_ARG
+          elif [ "$MODE" = "backtest" ]; then
+            python main.py --no-market-review $FORCE_RUN_ARG
           else
             python main.py $FORCE_RUN_ARG
           fi
+
       
       - name: 上传分析报告
         uses: actions/upload-artifact@v6
